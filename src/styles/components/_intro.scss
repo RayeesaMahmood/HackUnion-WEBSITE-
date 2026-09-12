@@ -1,0 +1,193 @@
+/* ============================================================
+   SITE OPENER
+   Ink screen → logo with a glare sweep → the screen lifts.
+   Tuned to a ~1s hold.
+   ============================================================ */
+
+/* Painted by the inline <head> snippet, before any module has parsed, so the
+   page underneath never flashes. */
+html.hu-intro-armed {
+  background: #070a11;
+}
+
+html.hu-intro-armed body {
+  background: #070a11;
+}
+
+html.hu-intro-armed body > *:not(.hu-intro) {
+  visibility: hidden;
+}
+
+body.is-intro-locked {
+  overflow: hidden;
+}
+
+.hu-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(120% 90% at 50% 40%, #0d1522 0%, #070a11 62%);
+  transition: transform 450ms cubic-bezier(0.76, 0, 0.24, 1), opacity 300ms ease 120ms;
+  will-change: transform, opacity;
+}
+
+.hu-intro.is-leaving {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.hu-intro__stage {
+  display: grid;
+  justify-items: center;
+  gap: 1.4rem;
+  padding-inline: 1.5rem;
+  text-align: center;
+}
+
+/* ---------- the mark ---------- */
+
+.hu-intro__mark {
+  position: relative;
+  width: clamp(190px, 26vw, 340px);
+  animation: hu-intro-rise 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hu-intro__logo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The glare is masked to the logo's own alpha, so the highlight travels
+   through the letterforms and the braces instead of over a rectangle. */
+.hu-intro__glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: linear-gradient(
+    100deg,
+    transparent 34%,
+    rgba(255, 255, 255, 0.35) 44%,
+    rgba(255, 255, 255, 0.98) 50%,
+    rgba(255, 255, 255, 0.35) 56%,
+    transparent 66%
+  );
+  background-size: 260% 100%;
+  background-position: 175% 0;
+  -webkit-mask-image: var(--hu-intro-logo);
+  mask-image: var(--hu-intro-logo);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: hu-intro-sweep 750ms cubic-bezier(0.4, 0, 0.2, 1) 190ms both;
+}
+
+/* A soft bloom behind the mark, brightening as the glare crosses it. */
+.hu-intro__mark::before {
+  content: '';
+  position: absolute;
+  inset: -22%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(47, 217, 174, 0.18) 0%,
+    rgba(245, 108, 0, 0.12) 42%,
+    transparent 70%
+  );
+  filter: blur(28px);
+  animation: hu-intro-bloom 950ms ease-in-out 150ms both;
+}
+
+.hu-intro__kicker {
+  margin: 0;
+  font-family: var(--font-code, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(139, 153, 178, 0.9);
+  animation: hu-intro-fade 350ms ease 450ms both;
+}
+
+.hu-intro__skip {
+  position: absolute;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  padding: 0.5rem 0.85rem;
+  border: 1px solid rgba(139, 153, 178, 0.32);
+  border-radius: 7px;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-code, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(139, 153, 178, 0.9);
+  transition: color 0.18s ease, border-color 0.18s ease;
+  animation: hu-intro-fade 300ms ease 550ms both;
+}
+
+.hu-intro__skip:hover,
+.hu-intro__skip:focus-visible {
+  color: #e9eef7;
+  border-color: rgba(233, 238, 247, 0.6);
+}
+
+/* ---------- keyframes ---------- */
+
+@keyframes hu-intro-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hu-intro-sweep {
+  from {
+    background-position: 175% 0;
+  }
+  to {
+    background-position: -85% 0;
+  }
+}
+
+@keyframes hu-intro-bloom {
+  0% {
+    opacity: 0;
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes hu-intro-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hu-intro {
+    display: none;
+  }
+
+  html.hu-intro-armed body > *:not(.hu-intro) {
+    visibility: visible;
+  }
+}

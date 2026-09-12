@@ -1,0 +1,337 @@
+@use '../abstracts/index' as *;
+
+/* ==========================================================================
+   About page hero — filmstrip carousel
+   A full-bleed, dark editorial hero. The photo strip shares one top edge;
+   the focused card unfurls to full height while its neighbours stay
+   clipped to half, and the backdrop re-grades to that card's accent hue.
+   ========================================================================== */
+
+.about-hero-carousel {
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	min-height: clamp(24rem, 56vh, 32rem);
+	background: #0a0e14;
+	color: #ffffff;
+}
+
+.about-hero-carousel:focus-visible {
+	outline: 2px solid rgba(255, 255, 255, 0.55);
+	outline-offset: -4px;
+}
+
+.about-hero-carousel__bg {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+}
+
+.about-hero-carousel__bg img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: 50% 32%;
+	opacity: 0;
+	transform: scale(1.06);
+	transition: opacity 900ms ease, transform 6000ms linear;
+}
+
+.about-hero-carousel__bg img.is-active {
+	opacity: 1;
+	transform: scale(1);
+}
+
+.about-hero-carousel__tint,
+.about-hero-carousel__tint-deep {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background-color: var(--about-carousel-accent, #2f63e4);
+	transition: background-color 700ms ease;
+	pointer-events: none;
+}
+
+.about-hero-carousel__tint {
+	mix-blend-mode: color;
+	opacity: 0.4;
+}
+
+.about-hero-carousel__tint-deep {
+	mix-blend-mode: multiply;
+	opacity: 0.14;
+}
+
+.about-hero-carousel__wash {
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	background:
+		linear-gradient(180deg, rgba(6, 9, 15, 0.42) 0%, rgba(6, 9, 15, 0.02) 30%, rgba(6, 9, 15, 0.12) 62%, rgba(4, 6, 10, 0.78) 100%);
+	pointer-events: none;
+}
+
+.about-hero-carousel__grain {
+	position: absolute;
+	inset: 0;
+	z-index: 3;
+	pointer-events: none;
+	opacity: 0.16;
+	mix-blend-mode: overlay;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+	background-size: 180px 180px;
+}
+
+.about-hero-carousel__content {
+	position: relative;
+	z-index: 4;
+	display: grid;
+	gap: clamp(1rem, 2.4vw, 1.4rem);
+	padding-top: clamp(1.5rem, 4vw, 2.25rem);
+	padding-inline: clamp(1.1rem, 4vw, var(--container-gutter));
+	max-width: var(--container-wide);
+	margin-inline: auto;
+	width: 100%;
+}
+
+.about-hero-carousel__eyebrow {
+	margin: 0;
+	font-size: 0.76rem;
+	font-weight: 800;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.72);
+}
+
+.about-hero-carousel__title {
+	margin: 0.5rem 0 0;
+	max-width: 21ch;
+	font-family: var(--font-display);
+	font-weight: 800;
+	letter-spacing: -0.03em;
+	line-height: 1.06;
+	font-size: clamp(1.8rem, 3.6vw, 2.9rem);
+	color: #ffffff;
+}
+
+.about-hero-carousel__text {
+	margin: 0.75rem 0 0;
+	max-width: 46ch;
+	font-size: clamp(0.9rem, 1.15vw, 1rem);
+	line-height: 1.5;
+	color: rgba(255, 255, 255, 0.78);
+}
+
+.about-hero-carousel__actions {
+	margin-top: 1rem;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.65rem;
+}
+
+.about-hero-carousel__actions .button--secondary {
+	border-color: rgba(255, 255, 255, 0.4);
+	background: rgba(255, 255, 255, 0.06);
+	color: #ffffff;
+}
+
+.about-hero-carousel__actions .button--secondary:hover,
+.about-hero-carousel__actions .button--secondary:focus-visible {
+	background: rgba(255, 255, 255, 0.14);
+}
+
+.about-hero-carousel__caption {
+	display: flex;
+	align-items: baseline;
+	gap: 0.6rem;
+	min-height: 1.4rem;
+	font-family: var(--font-code);
+}
+
+.about-hero-carousel__caption-label {
+	font-size: 0.7rem;
+	font-weight: 800;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--about-carousel-accent, #ffffff);
+	filter: brightness(1.6) saturate(1.4);
+	opacity: 0;
+	transform: translateY(4px);
+	transition: opacity 420ms ease, transform 420ms ease, color 500ms ease;
+}
+
+.about-hero-carousel__caption-label.is-in {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.about-hero-carousel__caption-note {
+	font-size: 0.76rem;
+	letter-spacing: 0.02em;
+	color: rgba(255, 255, 255, 0.58);
+	opacity: 0;
+	transition: opacity 420ms ease 60ms;
+}
+
+.about-hero-carousel__caption-note.is-in {
+	opacity: 1;
+}
+
+.about-hero-carousel__strip {
+	position: relative;
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: clamp(1rem, 3vw, 2.5rem);
+	padding-block: clamp(0.8rem, 2vw, 1.1rem) clamp(0.9rem, 2.2vw, 1.3rem);
+	padding-inline: clamp(1.1rem, 4vw, var(--container-gutter));
+	max-width: var(--container-wide);
+	margin-inline: auto;
+	width: 100%;
+}
+
+.about-hero-carousel__track {
+	display: flex;
+	align-items: flex-start;
+	gap: clamp(0.4rem, 1vw, 0.7rem);
+	overflow-x: auto;
+	scrollbar-width: none;
+	padding-bottom: 2px;
+}
+
+.about-hero-carousel__track::-webkit-scrollbar {
+	display: none;
+}
+
+.about-hero-carousel__card {
+	--card-w: clamp(3rem, 5.2vw, 5rem);
+	--card-h: clamp(6.5rem, 13vh, 9.5rem);
+	position: relative;
+	flex: 0 0 auto;
+	width: var(--card-w);
+	height: calc(var(--card-h) / 2);
+	border-radius: 4px;
+	overflow: hidden;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	background: rgba(255, 255, 255, 0.08);
+	transition: height 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.about-hero-carousel__card.is-active {
+	height: var(--card-h);
+}
+
+.about-hero-carousel__card img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: 50% 26%;
+}
+
+.about-hero-carousel__card-dim {
+	position: absolute;
+	inset: 0;
+	background: #000000;
+	opacity: 0.55;
+	transition: opacity 420ms ease;
+}
+
+.about-hero-carousel__card.is-active .about-hero-carousel__card-dim {
+	opacity: 0;
+}
+
+.about-hero-carousel__card:hover .about-hero-carousel__card-dim,
+.about-hero-carousel__card:focus-visible .about-hero-carousel__card-dim {
+	opacity: 0.2;
+}
+
+.about-hero-carousel__card:focus-visible {
+	outline: 2px solid #ffffff;
+	outline-offset: 2px;
+}
+
+.about-hero-carousel__rail {
+	flex: 0 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 0.55rem;
+	padding-bottom: 0.15rem;
+}
+
+.about-hero-carousel__rail-count {
+	display: flex;
+	gap: 0.3rem;
+	font-family: var(--font-code);
+	font-size: 0.72rem;
+	letter-spacing: 0.06em;
+	color: rgba(255, 255, 255, 0.85);
+}
+
+.about-hero-carousel__rail-count span:last-child {
+	color: rgba(255, 255, 255, 0.45);
+}
+
+.about-hero-carousel__rail-track {
+	position: relative;
+	width: clamp(4.5rem, 10vw, 7rem);
+	height: 1px;
+	background: rgba(255, 255, 255, 0.22);
+}
+
+.about-hero-carousel__rail-fill {
+	position: absolute;
+	inset-block: 0;
+	left: 0;
+	width: 16.66%;
+	background: #ffffff;
+	transition: left 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (max-width: 767px) {
+	.about-hero-carousel {
+		min-height: clamp(22rem, 62vh, 28rem);
+	}
+
+	.about-hero-carousel__strip {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.85rem;
+	}
+
+	.about-hero-carousel__rail {
+		flex-direction: row;
+		align-items: center;
+		width: 100%;
+	}
+
+	.about-hero-carousel__rail-track {
+		width: 100%;
+		flex: 1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.about-hero-carousel__bg img,
+	.about-hero-carousel__tint,
+	.about-hero-carousel__tint-deep,
+	.about-hero-carousel__card,
+	.about-hero-carousel__card-dim,
+	.about-hero-carousel__rail-fill,
+	.about-hero-carousel__caption-label,
+	.about-hero-carousel__caption-note {
+		transition: none !important;
+	}
+
+	.about-hero-carousel__bg img.is-active {
+		transform: none;
+	}
+}
