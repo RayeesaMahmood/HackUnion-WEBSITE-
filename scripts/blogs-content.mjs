@@ -129,8 +129,17 @@ const assertFileExists = (assetPath, fieldName, fileName, strictAssets) => {
     return;
   }
 
-  const absolute = path.join(projectRoot, assetPath);
-  if (!fs.existsSync(absolute)) {
+  // coverImage/authorImage values are cleaned with the "public/" prefix
+  // stripped (they're used as site-root-relative URLs, since Vite serves
+  // everything under public/ at the site root). That means an asset that
+  // physically lives under public/ won't be found by joining the cleaned
+  // path directly to the project root, so check both locations.
+  const candidates = [
+    path.join(projectRoot, assetPath),
+    path.join(projectRoot, 'public', assetPath)
+  ];
+
+  if (!candidates.some((candidate) => fs.existsSync(candidate))) {
     throw new Error(`Missing asset for ${fieldName} in ${fileName}: ${assetPath}`);
   }
 };

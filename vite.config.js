@@ -4,7 +4,7 @@ import fs from 'node:fs';
 
 const blogRoot = resolve(__dirname, 'blogs');
 const projectsRoot = resolve(__dirname, 'projects');
-const gallerySourceDir = resolve(__dirname, 'Images', 'gallery');
+const imagesSourceDir = resolve(__dirname, 'Images');
 
 const getBlogInputs = () => {
   if (!fs.existsSync(blogRoot)) {
@@ -68,16 +68,20 @@ export default defineConfig({
   base: './',
   plugins: [
     {
-      name: 'copy-gallery-runtime-assets',
+      // Copies the whole top-level Images/ folder (champions, Mentors,
+      // Speaker, organizers, blogs, logos, gallery, etc.) into dist/Images
+      // so every reference to "Images/..." in HTML/blog content resolves
+      // in the production build, not just the gallery subfolder.
+      name: 'copy-images-runtime-assets',
       closeBundle() {
-        const outGalleryDir = resolve(__dirname, 'dist', 'Images', 'gallery');
+        const outImagesDir = resolve(__dirname, 'dist', 'Images');
 
-        if (!fs.existsSync(gallerySourceDir)) {
+        if (!fs.existsSync(imagesSourceDir)) {
           return;
         }
 
-        fs.mkdirSync(outGalleryDir, { recursive: true });
-        fs.cpSync(gallerySourceDir, outGalleryDir, { recursive: true });
+        fs.mkdirSync(outImagesDir, { recursive: true });
+        fs.cpSync(imagesSourceDir, outImagesDir, { recursive: true });
       }
     }
   ],
